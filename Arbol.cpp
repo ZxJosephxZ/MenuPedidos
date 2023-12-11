@@ -202,11 +202,11 @@ NodoArbol* Arbol::encontrarNodo(NodoArbol* nodo, int numSegui)
 
     if (numSegui < nodo->obtenerPedido().getNumSeguimiento())
     {
-        return encontrarNodo(nodo->getSiguiente(), numSegui);
+        return encontrarNodo(nodo->getAnterior(), numSegui);
     }
     else
     {
-        return encontrarNodo(nodo->getAnterior(), numSegui);
+        return encontrarNodo(nodo->getSiguiente(), numSegui);
     }
 }
 
@@ -232,11 +232,11 @@ NodoArbol* Arbol::encontrarNodoPadre(NodoArbol* nodo, int numSegui)
     }
     if (numSegui < nodo->obtenerPedido().getNumSeguimiento())
     {
-        return encontrarNodoPadre(nodo->getSiguiente(),numSegui);
+        return encontrarNodoPadre(nodo->getAnterior(),numSegui);
     }
     else
     {
-        return encontrarNodoPadre(nodo->getAnterior(),numSegui);
+        return encontrarNodoPadre(nodo->getSiguiente(),numSegui);
     }
 }
 
@@ -262,6 +262,11 @@ void Arbol::eliminarNodo(NodoArbol* nodo)
                 delete(padre->getSiguiente());
                 padre->setSiguiente(nullptr);
             }
+            else if (padre->getAnterior() == nodo)
+            {
+                delete (padre->getAnterior());
+                padre->setAnterior(nullptr);
+            }
             else
             {
                 delete(raiz);
@@ -272,7 +277,7 @@ void Arbol::eliminarNodo(NodoArbol* nodo)
     {
         NodoArbol* sucesor = nodo->getAnterior();
         NodoArbol* padre = encontrarNodoPadre(raiz,nodo->obtenerPedido().getNumSeguimiento());
-        if (padre == nullptr)
+        if (padre != nullptr)
         {
             if (padre->getSiguiente() == nodo)
             {
@@ -310,11 +315,34 @@ void Arbol::eliminarNodo(NodoArbol* nodo)
         }
         delete (nodo);
     }
-    else
-    {
+    else {
+        NodoArbol* padre = encontrarNodoPadre(raiz,nodo->obtenerPedido().getNumSeguimiento());
         NodoArbol* sucesor = encontrarNodoSucesor(nodo);
-        nodo->obtenerPedido() = sucesor->obtenerPedido();
-        eliminarNodo(sucesor);
+        NodoArbol* padreSucesor = encontrarNodoPadre(raiz, sucesor->obtenerPedido().getNumSeguimiento());
+
+        if (padreSucesor != nullptr) {
+            if (padreSucesor->getSiguiente() == sucesor) {
+                padreSucesor->setSiguiente(nullptr);
+            } else {
+                padreSucesor->setAnterior(nullptr);
+            }
+        } else {
+            // Si no hay padre sucesor, actualiza el puntero de raíz
+            raiz = sucesor;
+        }
+
+        if (padre != nullptr) {
+            if (padre->getSiguiente() == nodo) {
+                padre->setSiguiente(sucesor);
+            } else {
+                padre->setAnterior(sucesor);
+            }
+        }
+
+        sucesor->setAnterior(nodo->getAnterior());
+        sucesor->setSiguiente(nodo->getSiguiente());
+
+        delete nodo;
     }
 
 }

@@ -294,9 +294,12 @@ void Gestor::eliminarNodoHoja()
     int numero;
     cout << "Ingresa el numero de seguimiento: ";
     cin >> numero;
-    cout << numero <<endl;
-    raiz.eliminarPedidoSegui(numero);
-    raiz.dibujar();
+    if (numero <= '99' && numero > '0')
+    {
+        raiz.eliminarPedidoSegui(numero);
+        raiz.dibujar();
+    }
+    
 }
 
 Gestor::~Gestor(){};
