@@ -162,7 +162,7 @@ void Gestor::encolarPedidos()
     std::uniform_int_distribution<> ajusteDistribution(1, 49);
     std::uniform_int_distribution<> reajusteDistribution(1, 499);
     std::uniform_int_distribution<> ajusteDistribution1(49, 99);
-    std::uniform_int_distribution<> reajusteDistribution1(499, 999);
+    std::uniform_int_distribution<> reajusteDistribution1(500, 999);
 
     if(pila.estaVacia())
     {
@@ -294,11 +294,8 @@ void Gestor::eliminarNodoHoja()
     int numero;
     cout << "Ingresa el numero de seguimiento: ";
     cin >> numero;
-    if (numero <= '99' && numero > '0')
-    {
-        raiz.eliminarPedidoSegui(numero);
-        raiz.dibujar();
-    }
+    raiz.eliminarPedidoSegui(numero);
+    raiz.dibujar();
     
 }
 
