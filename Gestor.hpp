@@ -26,12 +26,14 @@ class Gestor
         int PedidosEnSalaD();
         int PedidosEnListaEstandar();
         int PedidosEnListaUrgentes();
+        int PedidosEnArbol();
         void reiniciar();
         void crearArbol();
         void mostrarEstandarArbol();
         void mostrarUrgenteArbol();
         void inordenArbol();
         void buscarPedidosArbol();
+        void contarImpares();
         void mostrarHojas();
         void eliminarNodoHoja();
         ~Gestor();

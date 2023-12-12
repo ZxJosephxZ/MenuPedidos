@@ -10,11 +10,21 @@ public:
     NodoArbol(int numSeg)
         : numeroSeguimiento(numSeg), izquierda(nullptr), derecha(nullptr) {}
 };*/
-Arbol:: Arbol() { raiz = nullptr; }
+Arbol:: Arbol() { raiz = nullptr; longitud = 0; }
+
+int Arbol::arbolLongitud()
+{
+    return longitud;
+}
+void Arbol:: setLongitud(int num)
+{
+    longitud = num;
+};
 
 void Arbol:: insertar(Pedido& pedido) 
 { 
     raiz = insertar(raiz, pedido);
+    longitud++;
 }
 
 NodoArbol* Arbol:: insertar(NodoArbol* nodo, Pedido& pedido)
@@ -123,7 +133,7 @@ void Arbol::dibujarNodo(vector<string>& output, vector<string>& linkAbove, NodoA
 
 void Arbol::pintarEstandar()
 {
-    pintarEstandar(raiz);
+    pintarEstandar(raiz->getAnterior());
     cout << '\n';
 }
 void Arbol::pintarEstandar(NodoArbol* nodo)
@@ -132,7 +142,7 @@ void Arbol::pintarEstandar(NodoArbol* nodo)
     
     if(nodo->obtenerPedido().getNumSeguimiento() <= 500){
         pintarEstandar(nodo->getAnterior());
-        if(nodo->obtenerPedido().getNumSeguimiento() != 500) cout << nodo->obtenerPedido().getNumSeguimiento() << " ";
+        if(nodo->obtenerPedido().getNumSeguimiento() != 500) nodo->obtenerPedido().informe();
         pintarEstandar(nodo->getSiguiente()); 
     }
         
@@ -140,7 +150,7 @@ void Arbol::pintarEstandar(NodoArbol* nodo)
 
 void Arbol::pintarUrgente()
 {
-    pintarUrgente(raiz);
+    pintarUrgente(raiz->getSiguiente());
     cout << '\n';
 }
 void Arbol::pintarUrgente(NodoArbol* nodo)
@@ -149,7 +159,7 @@ void Arbol::pintarUrgente(NodoArbol* nodo)
     
     if(nodo->obtenerPedido().getNumSeguimiento() >= 500){
         pintarUrgente(nodo->getAnterior());
-        if(nodo->obtenerPedido().getNumSeguimiento() != 500) cout << nodo->obtenerPedido().getNumSeguimiento() << " ";
+        if(nodo->obtenerPedido().getNumSeguimiento() != 500) nodo->obtenerPedido().informe();
         pintarUrgente(nodo->getSiguiente()); 
     }
         
@@ -164,7 +174,7 @@ void Arbol::inorden()
 void Arbol::inorden(NodoArbol* nodo) {
     if (nodo != nullptr) {
         inorden(nodo->getAnterior());
-        if(nodo->obtenerPedido().getNumSeguimiento() != 500) nodo->obtenerPedido().informe(); // Muestra el pedido en lugar de solo el número de seguimiento
+        if(nodo->obtenerPedido().getNumSeguimiento() != 500) nodo->obtenerPedido().informe();
         inorden(nodo->getSiguiente());
     }
 }
@@ -216,6 +226,7 @@ void Arbol::eliminarPedidoSegui(int numSegui)
     if (nodoEliminar != nullptr)
     {
         eliminarNodo(nodoEliminar);
+        setLongitud(arbolLongitud() - 1);
     }
     else
     {
@@ -349,101 +360,77 @@ void Arbol::eliminarNodo(NodoArbol* nodo)
 
 void Arbol::estandarSeguimientoMenor()
 {
-    Pedido menor=estandarSeguimientoMenor(raiz);
+    Pedido menor=estandarSeguimientoMenor(raiz->getAnterior());
     cout << "\tPEDIDO ESTANDAR CON MENOR NUMERO DE SEGUIMIENTO\n";
     menor.informe();
 }
 Pedido Arbol::estandarSeguimientoMenor(NodoArbol* nodo) {
-    if (nodo != nullptr && nodo->obtenerPedido().getNumSeguimiento() <= 500) {
-        while (nodo->getAnterior() != nullptr) {
-        nodo = nodo->getAnterior();
-        }
-    if(nodo->obtenerPedido().getNumSeguimiento() != 500) return nodo->obtenerPedido();
+    while (nodo->getAnterior() != nullptr) {
+    nodo = nodo->getAnterior();
     }
+    return nodo->obtenerPedido();
 }
 
 void Arbol::estandarSeguimientoMayor()
 {
-    Pedido mayor=estandarSeguimientoMayor(raiz);
+    Pedido mayor=estandarSeguimientoMayor(raiz->getAnterior());
     cout << "\tPEDIDO ESTANDAR CON MAYOR NUMERO DE SEGUIMIENTO\n";
     mayor.informe();
 }
 Pedido Arbol::estandarSeguimientoMayor(NodoArbol* nodo) {
-    nodo = nodo->getAnterior();
-    if (nodo->getSiguiente() != nullptr ) {
-        while (nodo->getSiguiente() != nullptr && nodo->getSiguiente()->obtenerPedido().getNumSeguimiento() <= 500) {
-        nodo = nodo->getSiguiente();
+    while (nodo->getSiguiente() != nullptr){// && nodo->getSiguiente()->obtenerPedido().getNumSeguimiento() <= 500) {
+    nodo = nodo->getSiguiente();
+    }
+    return nodo->obtenerPedido();
+}
+
+Pedido& Arbol::obtenerUrgenteIdMenor() {
+    menorPedido = nullptr;
+    
+    urgenteIdMenor(raiz->getSiguiente());
+    return *menorPedido;
+}
+
+void Arbol::urgenteIdMenor(NodoArbol* nodo){
+    
+    if (nodo != nullptr) {
+        if (menorPedido == nullptr || nodo->obtenerPedido().getPrioridad() < menorPedido->getPrioridad()) {
+            menorPedido = &nodo->obtenerPedido();
         }
-    if(nodo->obtenerPedido().getNumSeguimiento() != 500) return nodo->obtenerPedido();
+        urgenteIdMenor(nodo->getAnterior());
+        urgenteIdMenor(nodo->getSiguiente());
     }
 }
 
-
-/*
-void Arbol::insertar(Pedido val) { 
-    raiz = insertar(raiz, val); 
-    }
-    
-class ArbolBinarioBusqueda {
-private:
-    NodoArbol* raiz;
-
-    // Función auxiliar para la inserción de un pedido en el árbol
-    NodoArbol* insertarPedido(NodoArbol* nodo, int numSeg, int tipoPedido) {
-        if (nodo == nullptr) {
-            return new NodoArbol(numSeg);
+Pedido& Arbol::obtenerUrgenteIdMayor() {
+    mayorPedido = nullptr;
+    urgenteIdMayor(raiz->getSiguiente());
+    return *mayorPedido;
+}
+void Arbol::urgenteIdMayor(NodoArbol* nodo){
+    if (nodo != nullptr) {
+        if (mayorPedido == nullptr || nodo->obtenerPedido().getPrioridad() > mayorPedido->getPrioridad()) {
+            mayorPedido = &nodo->obtenerPedido();
         }
+        urgenteIdMayor(nodo->getAnterior());
+        urgenteIdMayor(nodo->getSiguiente());
+    }
+}
 
-        if (numSeg <= nodo->numeroSeguimiento) {
-            nodo->izquierda = insertarPedido(nodo->izquierda, numSeg, tipoPedido);
-        } else {
-            nodo->derecha = insertarPedido(nodo->derecha, numSeg, tipoPedido);
+int Arbol::numeroSeguimientoImpar(){
+    impares = 0;
+    numeroSeguimientoImpar(raiz);
+    return impares;
+}
+
+void Arbol::numeroSeguimientoImpar(NodoArbol* nodo){
+    if (nodo != nullptr) {
+        if(nodo->obtenerPedido().getNumSeguimiento() != 500 && nodo->obtenerPedido().getNumSeguimiento()%2 != 0 ) {
+            impares++;
         }
-
-        return nodo;
+        numeroSeguimientoImpar(nodo->getAnterior());
+        numeroSeguimientoImpar(nodo->getSiguiente());
     }
+}
 
-    // Función auxiliar para recorrer el árbol en orden
-    void inorden(NodoArbol* nodo) {
-        if (nodo != nullptr) {
-            inorden(nodo->izquierda);
-            std::cout << nodo->numeroSeguimiento << " ";
-            inorden(nodo->derecha);
-        }
-    }
-
-public:
-    ArbolBinarioBusqueda() : raiz(nullptr) {
-        // Inicializar la raíz con el valor 500
-        raiz = new NodoArbol(500);
-    }
-
-    // Función pública para insertar un pedido en el árbol
-    void insertarPedido(int numSeg, int tipoPedido) {
-        raiz = insertarPedido(raiz, numSeg, tipoPedido);
-    }
-
-    // Función pública para mostrar el árbol en orden
-    void mostrarEnOrden() {
-        inorden(raiz);
-        std::cout << std::endl;
-    }
-};
- 
-int main() {
-    ArbolBinarioBusqueda arbol;
-
-    // Insertar pedidos en el árbol
-    arbol.insertarPedido(400, 0); // Pedido estandar
-    arbol.insertarPedido(600, 1); // Pedido urgente
-    arbol.insertarPedido(300, 0); // Pedido estandar
-    arbol.insertarPedido(650,0);
-    arbol.insertarPedido(700, 1); // Pedido urgente
-
-    // Mostrar el árbol en orden
-    std::cout << "Árbol en orden: ";
-    arbol.mostrarEnOrden();
-
-    return 0;
-}*/
 Arbol::~Arbol() {}

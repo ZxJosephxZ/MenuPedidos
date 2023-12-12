@@ -32,14 +32,9 @@ void Gestor::muestraPedidosEstandar()
 void Gestor::maxPedidoEstandar()
 {
     cout << "Pedido estandar con mayor prioridad:" << endl;
-    estandar.obtenerPedidoLista(estandar.obtenerPedidoMax());
+    Lista nuevoNodo = estandar;
 }
-/*
-void Gestor::maxPedidoEstandar()
-{   cout << "Pedido estandar con mayor prioridad:" << endl;
-    estandar.obtenerPedidoLista(estandar.obtenerPedidoMin());
-};
-*/
+
 void Gestor::muestraPedidosUrgentes()
 {
     cout << "Lista urgente:" <<endl;
@@ -140,6 +135,10 @@ int Gestor::PedidosEnListaEstandar()
 int Gestor::PedidosEnListaUrgentes()
 {
     return urgente.obtenerListaLongitud();
+}
+
+int Gestor::PedidosEnArbol(){
+    return raiz.arbolLongitud();
 }
 
 void Gestor::reiniciar()
@@ -247,6 +246,7 @@ void Gestor:: crearArbol(){
         Pedido pedido500(pedido500.generarPedidoAleatoria());
         pedido500.setNumseg(500);
         raiz.insertar(pedido500);
+        raiz.setLongitud(0);
         
         while(!estandar.estaVacia()){
             Pedido e=estandar.obtenerPedido();
@@ -260,7 +260,6 @@ void Gestor:: crearArbol(){
             raiz.insertar(u);
             urgente.desListar();
         }
-        cout << "simulacion terminada con exito"<<endl;
     }
     
     cout << endl << "\nMi Abb: ";
@@ -280,8 +279,14 @@ void Gestor:: inordenArbol(){
 void Gestor:: buscarPedidosArbol(){
     raiz.estandarSeguimientoMenor();
     raiz.estandarSeguimientoMayor();
-    //raiz.urgenteIdMenor();
-    //raiz.urgenteIdMayor();
+
+    Pedido& MenorPrioridad = raiz.obtenerUrgenteIdMenor();
+    cout << "\tPEDIDO URGENTE CON MENOR ID " << endl;
+    MenorPrioridad.informe();
+    
+    Pedido& MayorPrioridad = raiz.obtenerUrgenteIdMayor();
+    cout << "\tPEDIDO URGENTE CON MAYOR ID " << endl;
+    MayorPrioridad.informe();
 }
 
 void Gestor::mostrarHojas()
@@ -292,11 +297,25 @@ void Gestor::mostrarHojas()
 void Gestor::eliminarNodoHoja()
 {
     int numero;
+    raiz.dibujar();
     cout << "Ingresa el numero de seguimiento: ";
     cin >> numero;
-    raiz.eliminarPedidoSegui(numero);
-    raiz.dibujar();
+    numero = (int)numero;
+    if ((numero > 0 && numero < 999) && numero != 500)
+    {
+        raiz.eliminarPedidoSegui(numero);
+        raiz.dibujar();
+    }
+    else
+    {   cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "numero introducido incorrectamente"<<endl;
+    }
     
+}
+
+void Gestor:: contarImpares(){
+    cout << "\n\tPedidos Impares -> " << raiz.numeroSeguimientoImpar() << endl;
 }
 
 Gestor::~Gestor(){};

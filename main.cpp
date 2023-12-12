@@ -16,7 +16,7 @@ int main(int argc, char** argv)
              << gestor.PedidosEnSalaD()
              << " \n\tPedidos en las listas:\n \t\tEstandar-> "
              << gestor.PedidosEnListaEstandar() << "\tUrgentes-> " << gestor.PedidosEnListaUrgentes()
-             << "\n\tPedidos en el arbol -> " << 0
+             << "\n\tPedidos en el arbol -> " << gestor.PedidosEnArbol()
              << "\n";
         cout << "\t----------------------------------------------------------------"
                 "------\n\n";
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
             gestor.buscarPedidosArbol();
             break;
         case 'R':
-            //...;
+            gestor.contarImpares();
             break;
         case 'T':
             gestor.mostrarHojas();

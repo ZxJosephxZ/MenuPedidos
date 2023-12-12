@@ -6,6 +6,8 @@ class Arbol
 {
     public:
         Arbol();
+        int arbolLongitud();
+        void setLongitud(int num);
         void insertarPedido(Pedido &p);
         void mostrarEnOrden();
         void insertar(Pedido &p);
@@ -16,8 +18,11 @@ class Arbol
         void inorden();
         void estandarSeguimientoMenor();
         void estandarSeguimientoMayor();
+        Pedido& obtenerUrgenteIdMayor();
+        Pedido& obtenerUrgenteIdMenor();
+        int numeroSeguimientoImpar();
         void eliminarPedidoSegui(int numSegui);
-        //Pedido Arbol:: pedidoArbol();
+
         ~Arbol();
     private:
         NodoArbol *raiz;
@@ -36,28 +41,11 @@ class Arbol
         void mostrarNodoHoja(NodoArbol* nodo);
         Pedido estandarSeguimientoMenor(NodoArbol*);
         Pedido estandarSeguimientoMayor(NodoArbol*);
-
- /*
-        NodoArbol* insertarPedido(NodoArbol* nodo, Pedido& pedido) {
-        if (nodo == nullptr) {
-            return new NodoArbol(pedido);
-        }
-
-        if (pedido.getNumSeguimiento() <= nodo->obtenerPedido().getNumSeguimiento()) {
-            nodo->setSiguiente(insertarPedido(nodo->getSiguiente(), pedido));
-        } else {
-            nodo->setAnterior(insertarPedido(nodo->getAnterior(), pedido));
-        }
-
-        return nodo;
-    }
-
-    // Función auxiliar para recorrer el árbol en orden
-    void inorden(NodoArbol* nodo) {
-        if (nodo != nullptr) {
-            inorden(nodo->getSiguiente());
-            nodo->obtenerPedido().informe(); // Muestra el pedido en lugar de solo el número de seguimiento
-            inorden(nodo->getAnterior());
-        }
-    }*/
+        void urgenteIdMayor(NodoArbol*);
+        void urgenteIdMenor(NodoArbol*);
+        void numeroSeguimientoImpar(NodoArbol*);
+        Pedido* mayorPedido;
+        Pedido* menorPedido;
+        int longitud;
+        int impares;
 };
